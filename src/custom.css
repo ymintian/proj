@@ -1,0 +1,31 @@
+html, 
+body {
+    height: 100%;
+}
+body{
+    background-color: darkslategrey;
+}
+#root{
+    height: 100%;
+}
+.fl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.signUpContainer form {
+    display: flex;
+    flex-direction: column;
+}
+.signUpContainer form > *{
+    border: 1px solid lightgray;
+    border-radius: 2px;
+    padding: 10px;
+    margin: 10px 0;
+    flex-basis: auto;
+}
+.signUpContainer form button{
+    cursor: pointer;
+    background: lightgreen;
+}

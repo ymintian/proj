@@ -26,7 +26,7 @@ class App extends Component {
   }
   render() {
     return (
-      <div>
+      <div className='fl'>
         {/* <form onSubmit={this.addMessage.bind(this)}>
           <input type="text" ref={ el => this.inputEl = el }/>
           <input type="submit"/>

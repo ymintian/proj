@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
-
+import './custom.css';
 // export let i = 20;
 // console.log("iiii"+i);
 // let r = 5;
@@ -22,7 +22,7 @@ class Test extends Component {
     }
     render (){
         return(
-            <div>
+            <div className="signUpContainer">
                 <form>
                     <input id='email' placeholder="email"/>
                     <input id='password' type="password" placeholder="password"/>
