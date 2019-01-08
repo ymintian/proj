@@ -12,10 +12,14 @@ class Test extends Component {
     }
     handleClick(e){
         e.preventDefault();
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((res)=>{console.log("SUCCESS",res)})
+        let email = document.getElementById('email');
+        let password = document.getElementById('password');
+        firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
+            .then((res)=>{
+                console.log("SUCCESS",res); 
+                email.value = '';
+                password.value = '';
+            })
             .catch((error)=>{
                 console.log('ERROR',error);
             });

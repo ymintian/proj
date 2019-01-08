@@ -2,11 +2,23 @@ html,
 body {
     height: 100%;
 }
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 body{
     background-color: darkslategrey;
 }
+* {
+    font-family: Montserrat, sans-serif;
+}
 #root{
     height: 100%;
+}
+.main_header h2{
+    color: orange;
+    text-transform: capitalize;
+    font-size: 30px;
+    padding: 10px 20px;
+    margin: 0;
+    position: fixed;
 }
 .fl {
     display: flex;
@@ -16,14 +28,15 @@ body{
 }
 .signUpContainer form {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    width: 300px;
 }
 .signUpContainer form > *{
     border: 1px solid lightgray;
     border-radius: 2px;
     padding: 10px;
     margin: 10px 0;
-    flex-basis: auto;
+    flex-basis: 100%;
 }
 .signUpContainer form button{
     cursor: pointer;

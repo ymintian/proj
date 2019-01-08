@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import fire from './my_config';
 import Test from './s';
+import Header from './header.js';
 
 class App extends Component {
   constructor(props) {
@@ -26,17 +27,20 @@ class App extends Component {
   }
   render() {
     return (
-      <div className='fl'>
-        {/* <form onSubmit={this.addMessage.bind(this)}>
-          <input type="text" ref={ el => this.inputEl = el }/>
-          <input type="submit"/>
-          <ul>
-            {
-              this.state.messages.map( message => <li key={message.id}>{message.text}</li> )
-            }
-          </ul>
-        </form> */}
-       <Test/>
+      <div style={{height:"100%"}}>
+        <Header/>
+        <div className='fl'>
+          {/* <form onSubmit={this.addMessage.bind(this)}>
+            <input type="text" ref={ el => this.inputEl = el }/>
+            <input type="submit"/>
+            <ul>
+              {
+                this.state.messages.map( message => <li key={message.id}>{message.text}</li> )
+              }
+            </ul>
+          </form> */}
+        <Test/>
+        </div>
       </div>
     );
   }
