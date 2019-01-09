@@ -12,6 +12,9 @@ body{
 #root{
     height: 100%;
 }
+.main_header {
+    min-height: 50px;
+}
 .main_header h2{
     color: orange;
     text-transform: capitalize;
@@ -41,4 +44,13 @@ body{
 .signUpContainer form button{
     cursor: pointer;
     background: lightgreen;
+}
+.team_img_container {
+    width: 100px;
+    height: 100px;
+}
+.team_img_container img {
+    display: block;
+    max-width: 100%;
+    height: 100%;
 }
