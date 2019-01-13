@@ -24,6 +24,7 @@ function BasicExample() {
 
         <Route exact path="/" component={App} />
         <Route path="/table" component={Table} />
+        <Route path="/team/:id" component={Team} />
       </div>
     </Router>
   );
@@ -34,38 +35,178 @@ function BasicExample() {
 class Table extends Component {
   constructor(props){
     super(props);
-    this.state = {teams_images:[]};
+    this.state = {teams_images:[],competitions:[],standing:[]};
   }
   componentWillMount(){
-    fetch('http://api.football-data.org/v2/competitions/PL/teams',
+    // fetch('https://api.football-data.org/v2/competitions/PL/teams',
+    //   {
+    //     headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
+    //     method: "GET"
+    //   })
+    //   .then((res)=>{
+    //     return res.json();
+        
+    //   })
+    //   .then((r)=>{console.log(r.teams);this.setState({teams_images:r.teams});})
+    //   .catch((er)=>{console.log("error:"+er)});
+    fetch('https://api.football-data.org/v2/competitions/2003/standings',
       {
         headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
         method: "GET"
       })
       .then((res)=>{
         return res.json();
-        
       })
-      .then((r)=>{console.log(r.teams);this.setState({teams_images:r.teams});})
+      .then((r)=>{
+        // let competitions = r.competitions;
+        // let ar = [];
+        // competitions.forEach((item)=>{
+        //   ar.push(<Competition name={item.name}/>);
+        // });
+        console.log(r.standings[0].table);
+        this.setState({standing: r.standings[0].table});
+        //this.setState({competitions: ar});
+      })
       .catch((er)=>{console.log("error:"+er)});
   }
   render(){
-    let l = this.state.teams_images.length;
-    let src = this.state.teams_images.slice(0,l);
+    // let l = this.state.teams_images.length;
+    // let src = this.state.teams_images.slice(0,l);
     
-    let ar1 = [];
-    src.forEach((el,i)=>{
-      ar1.push(<Img src={el.crestUrl} key={i}/>);
-    });
-    console.log('ar1',ar1);
+    // let ar1 = [];
+    // src.forEach((el,i)=>{
+    //   ar1.push(<Img src={el.crestUrl} key={i}/>);
+    // });
+    // console.log('ar1',ar1);
+    
+
+
+    //let l = this.state.competitions.length;
+    //let names = this.state.competitions.slice(0,l);
+    let standing = this.state.standing.slice(0, this.state.standing.length);
+    console.log(standing);
     return (
       <div>
-        <h2>EPL Table</h2>
-        <div>{ar1}</div>
+        <h2>Table</h2>
+        <div>
+          <table id="standing" style={{textAlign: "center",color: "#fff"}}>
+            <thead>
+              <tr>
+                <td>#</td>
+                <td>team</td>
+                <td>games</td>
+                <td>won</td>
+                <td>draw</td>
+                <td>lost</td>
+                <td>goals</td>
+                <td>goals diff</td>
+                <td>pts</td>
+              </tr>
+            </thead>
+            <tbody>
+            {
+              standing.map((row,i)=>{
+                return <StandingRow key={i} teamId={row.team.id} pos={i+1} points={row.points} games={row.playedGames} goalsFor={row.goalsFor} goalsAgainst={row.goalsAgainst} goalDifference={row.goalDifference} name={row.team.name} won={row.won} draw={row.draw} lost={row.lost}  />;
+              })
+            }
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
 }
+
+class StandingRow extends Component {
+
+  render(){
+    let color = this.props.goalDifference < 0 ? "red" : "green";
+    return (
+      <tr>
+        <td>{this.props.pos}</td>
+        <td><Link to={`team/${this.props.teamId}`}>{this.props.name}</Link></td>
+        <td>{this.props.games}</td>
+        <td>{this.props.won}</td>
+        <td>{this.props.draw}</td>
+        <td>{this.props.lost}</td>
+        <td>{`${this.props.goalsFor} - ${this.props.goalsAgainst}`}</td>
+        <td style={{color: `${color}`}}>{this.props.goalDifference}</td>
+        <td>{this.props.points}</td>
+      </tr>
+    )
+  }
+}
+
+class Team extends Component {
+  constructor(props){
+    super(props);
+    this.state = {teamInfo:[]};
+  }
+  componentWillMount(){
+    let id = this.props.match.params.id;
+    fetch(`https://api.football-data.org/v2/teams/${id}`,
+      {
+        headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
+        method: "GET"
+      })
+      .then((res)=>{
+        return res.json();
+      })
+      .then((r)=>{
+        // let competitions = r.competitions;
+        // let ar = [];
+        // competitions.forEach((item)=>{
+        //   ar.push(<Competition name={item.name}/>);
+        // });
+        console.log(r);
+        this.setState({teamInfo: r});
+      })
+      .catch((er)=>{console.log("error:"+er);this.setState({teamInfo:[]})});
+  }
+  
+  render(){
+    let teamInfo = Object.assign({}, this.state.teamInfo);
+    
+    console.log("5tregdf",teamInfo);
+    if('errorCode' in teamInfo) 
+      var info = 'team not found';
+     else 
+      var info = teamInfo;
+  
+    return <TeamInfo teamInfo={info}/>;
+  }
+}
+
+class TeamInfo extends Component {
+
+  render(){
+    let info = this.props.teamInfo;
+    let logo_src = info.crestUrl ? info.crestUrl : 'https://www.freeiconspng.com/uploads/no-image-icon-21.png';
+    console.log(logo_src);
+    if (typeof info == 'string') return <div>team not found</div>
+    else  return (
+      <TeamLogo logo_src={logo_src}/>
+    )
+  }
+}
+
+class TeamLogo extends Component {
+  render(){
+    
+   return (
+      <img src={this.props.logo_src} />
+    )
+  }
+}
+
+class Competition extends Component {
+  render(){
+    return (
+      <p>{this.props.name}</p>
+    )
+  }
+}
+
 
 class Img extends Component {
   render(){
