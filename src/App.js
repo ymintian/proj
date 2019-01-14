@@ -49,7 +49,7 @@ class Table extends Component {
     //   })
     //   .then((r)=>{console.log(r.teams);this.setState({teams_images:r.teams});})
     //   .catch((er)=>{console.log("error:"+er)});
-    fetch('https://api.football-data.org/v2/competitions/2003/standings',
+    fetch('https://api.football-data.org/v2/competitions/PL/standings',
       {
         headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
         method: "GET"
@@ -173,19 +173,58 @@ class Team extends Component {
      else 
       var info = teamInfo;
   
-    return <TeamInfo teamInfo={info}/>;
+    return <TeamInfo teamInfo={info} />;
   }
 }
 
 class TeamInfo extends Component {
-
+  constructor(props){
+    super(props);
+  }
   render(){
     let info = this.props.teamInfo;
     let logo_src = info.crestUrl ? info.crestUrl : 'https://www.freeiconspng.com/uploads/no-image-icon-21.png';
     console.log(logo_src);
     if (typeof info == 'string') return <div>team not found</div>
     else  return (
-      <TeamLogo logo_src={logo_src}/>
+      <div>
+        <TeamLogo logo_src={logo_src}/>
+        <TeamMainInfo info={info}/>
+      </div>
+    )
+  }
+}
+
+
+function parseColor(str){
+  console.log('str',str);
+  let arr = str.split('/').map((c)=> c.trim().toLowerCase());
+  return arr;
+};
+
+class TeamMainInfo extends Component {
+  constructor(props){
+    super(props);
+  }
+  render(){
+    let info = this.props.info;
+    let country = Object.assign({},info.area);
+    
+    console.log('info', info);
+    
+    
+   return (
+      <div>
+        <p>{info.name}</p>
+        <p>{country.name}</p>
+        <p>{info.clubColors}</p>
+        <p>{info.founded}</p>
+        <p>{info.venue}</p>
+        <p><a href={info.website} target="_blank">{info.website}</a></p>
+        <p>{info.email}</p>
+        <p>{info.phone}</p>
+        <p>{info.address}</p>
+      </div>
     )
   }
 }
@@ -194,7 +233,9 @@ class TeamLogo extends Component {
   render(){
     
    return (
-      <img src={this.props.logo_src} />
+      <div style={{height: "100px",width: "100px"}}>
+        <img src={this.props.logo_src} style={{height:"100%",width:"100%"}}/>
+      </div>
     )
   }
 }
