@@ -229,7 +229,32 @@ class TeamMainInfo extends Component {
   }
 }
 
+class TeamSquad extends Component {
+  constructor(props){
+    super(props);
+  }
+  render(){
+   let players = this.props.squad.map((player)=>{
+    return <tr><td>{player.name}</td></tr>;
+   });
+
+   return (
+      <div>
+        <table>
+          <tbody>
+            {players}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+}
+
+
 class TeamLogo extends Component {
+  constructor(props){
+    super(props);
+  }
   render(){
     
    return (
