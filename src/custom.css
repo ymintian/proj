@@ -55,7 +55,106 @@ body{
     height: 100%;
 }
 
+.standing_head, .squad_head {
+    display: inline-block;
+    position: relative;
+    color: #fff;
+    padding-left: 30px;
+    margin-top: 0;
+    font-size: 60px;
+}
+.standing_head:before, .squad_head:before {
+    content: '';
+    position: absolute;
+    height: 45px;
+    bottom: -15px;
+    left: 0;
+    background: limegreen;
+    opacity: .5;
+    width: 130%;
+    z-index: -1;
+}
+
 #standing a {
+    display: block;
     text-decoration: none;
-    color: lightgray;
+    color: #0099ff;
+    line-height: 40px;
+}
+
+#standing {
+    background: #fff;
+    color: #000;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#standing thead td{
+    color: #9fbae6;
+}
+#standing tbody tr{
+    background: transparent;
+    transition: all 2s;
+}
+#standing tr td{
+    padding: .375rem .95rem;
+    min-width: 50px;
+    font-size: 16px;
+    line-height: 40px;
+    text-align: center;
+    border-bottom: 1px solid lightgray;
+}
+
+#standing tr td:nth-child(2){
+    text-align: left;
+}
+
+#standing  tbody tr:hover td{
+    background: lightgray;
+}
+
+.small_team_logo {
+    width: 36px;
+    height: 36px;
+    float: left;
+    margin-right: 5px;
+}
+.team_info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.team_logo img {
+    display: block;
+    width: 50%;
+    height: 60%;
+    margin: 20px 60px 0 auto;
+}
+
+.team_info > div {
+    flex-basis: 50%;
+}
+.team_info > div:last-child {
+    flex-basis: 100%;
+}
+
+.team_info > div:last-child table {
+    width: 100%;
+    text-transform: capitalize;
+}
+
+.squad_table {
+    background: #000;
+    color: #fff;
+    border-collapse: collapse;
+}
+
+.squad_table td {
+    border-bottom: 1px solid #fff;
+    line-height: 50px;
+}
+
+.squad_table td:not(:nth-child(2)) {
+    text-align: center;
 }

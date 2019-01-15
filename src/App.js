@@ -5,11 +5,13 @@ import fire from './my_config';
 import Test from './s';
 import Header from './header.js';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import ScrollToTop from "./ScrollToTop.js";
 
 
 function BasicExample() {
   return (
     <Router>
+      <ScrollToTop>
       <div>
         <ul>
           <li>
@@ -26,11 +28,10 @@ function BasicExample() {
         <Route path="/table" component={Table} />
         <Route path="/team/:id" component={Team} />
       </div>
+    </ScrollToTop>
     </Router>
   );
 }
-
-
 
 class Table extends Component {
   constructor(props){
@@ -49,25 +50,38 @@ class Table extends Component {
     //   })
     //   .then((r)=>{console.log(r.teams);this.setState({teams_images:r.teams});})
     //   .catch((er)=>{console.log("error:"+er)});
-    fetch('https://api.football-data.org/v2/competitions/PL/standings',
-      {
-        headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
-        method: "GET"
-      })
-      .then((res)=>{
-        return res.json();
-      })
-      .then((r)=>{
-        // let competitions = r.competitions;
-        // let ar = [];
-        // competitions.forEach((item)=>{
-        //   ar.push(<Competition name={item.name}/>);
-        // });
-        console.log(r.standings[0].table);
-        this.setState({standing: r.standings[0].table});
-        //this.setState({competitions: ar});
-      })
-      .catch((er)=>{console.log("error:"+er)});
+    // fetch('https://api.football-data.org/v2/competitions/PL/standings',
+    //   {
+    //     headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
+    //     method: "GET"
+    //   })
+    //   .then((res)=>{
+    //     return res.json();
+    //   })
+    //   .then((r)=>{
+    //     // let competitions = r.competitions;
+    //     // let ar = [];
+    //     // competitions.forEach((item)=>{
+    //     //   ar.push(<Competition name={item.name}/>);
+    //     // });
+    //     console.log(r.standings[0].table);
+    //     this.setState({standing: r.standings[0].table});
+    //     //this.setState({competitions: ar});
+    //   })
+    //   .catch((er)=>{console.log("error:"+er)});
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET","https://api.football-data.org/v2/competitions/PL/standings",false);
+    xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
+    let arr;
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === 4 && xhr.status === 200) {
+        arr = JSON.parse(xhr.responseText);
+      }
+    };
+    xhr.send();
+    console.log(arr);
+    this.setState({standing: arr.standings[0].table});
   }
   render(){
     // let l = this.state.teams_images.length;
@@ -87,9 +101,9 @@ class Table extends Component {
     console.log(standing);
     return (
       <div>
-        <h2>Table</h2>
+        <h2 className="standing_head">Table</h2>
         <div>
-          <table id="standing" style={{textAlign: "center",color: "#fff"}}>
+          <table id="standing">
             <thead>
               <tr>
                 <td>#</td>
@@ -106,7 +120,7 @@ class Table extends Component {
             <tbody>
             {
               standing.map((row,i)=>{
-                return <StandingRow key={i} teamId={row.team.id} pos={i+1} points={row.points} games={row.playedGames} goalsFor={row.goalsFor} goalsAgainst={row.goalsAgainst} goalDifference={row.goalDifference} name={row.team.name} won={row.won} draw={row.draw} lost={row.lost}  />;
+                return <StandingRow key={i} teamId={row.team.id} pos={i+1} points={row.points} games={row.playedGames} goalsFor={row.goalsFor} goalsAgainst={row.goalsAgainst} goalDifference={row.goalDifference} name={row.team.name} won={row.won} draw={row.draw} lost={row.lost} logo={row.team.crestUrl}  />;
               })
             }
             </tbody>
@@ -124,7 +138,7 @@ class StandingRow extends Component {
     return (
       <tr>
         <td>{this.props.pos}</td>
-        <td><Link to={`team/${this.props.teamId}`}>{this.props.name}</Link></td>
+        <td><Link to={`team/${this.props.teamId}`}><SmallTeamLogo src={this.props.logo} />{this.props.name}</Link></td>
         <td>{this.props.games}</td>
         <td>{this.props.won}</td>
         <td>{this.props.draw}</td>
@@ -137,31 +151,59 @@ class StandingRow extends Component {
   }
 }
 
+class SmallTeamLogo extends Component {
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return (
+      <img src={this.props.src} className="small_team_logo" />
+    )
+  }
+}
+
 class Team extends Component {
   constructor(props){
     super(props);
     this.state = {teamInfo:[]};
   }
   componentWillMount(){
+    // let id = this.props.match.params.id;
+    // fetch(`https://api.football-data.org/v2/teams/${id}`,
+    //   {
+    //     headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
+    //     method: "GET"
+    //   })
+    //   .then((res)=>{
+    //     return res.json();
+    //   })
+    //   .then((r)=>{
+    //     // let competitions = r.competitions;
+    //     // let ar = [];
+    //     // competitions.forEach((item)=>{
+    //     //   ar.push(<Competition name={item.name}/>);
+    //     // });
+    //     console.log(r);
+    //     this.setState({teamInfo: r});
+    //   })
+    //   .catch((er)=>{console.log("error:"+er);this.setState({teamInfo:[]})});
+
+
+    let xhr = new XMLHttpRequest();
     let id = this.props.match.params.id;
-    fetch(`https://api.football-data.org/v2/teams/${id}`,
-      {
-        headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
-        method: "GET"
-      })
-      .then((res)=>{
-        return res.json();
-      })
-      .then((r)=>{
-        // let competitions = r.competitions;
-        // let ar = [];
-        // competitions.forEach((item)=>{
-        //   ar.push(<Competition name={item.name}/>);
-        // });
-        console.log(r);
-        this.setState({teamInfo: r});
-      })
-      .catch((er)=>{console.log("error:"+er);this.setState({teamInfo:[]})});
+    xhr.open("GET",`https://api.football-data.org/v2/teams/${id}`,false);
+    xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
+    let arr;
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === 4 && xhr.status === 200) {
+        arr = JSON.parse(xhr.responseText);
+      }
+    };
+    xhr.send();
+    console.log('gfdg',arr);
+    this.setState({teamInfo: arr});
+
+
   }
   
   render(){
@@ -187,9 +229,10 @@ class TeamInfo extends Component {
     console.log(logo_src);
     if (typeof info == 'string') return <div>team not found</div>
     else  return (
-      <div>
+      <div className="team_info">
         <TeamLogo logo_src={logo_src}/>
         <TeamMainInfo info={info}/>
+        <TeamSquad squad={info.squad}/>
       </div>
     )
   }
@@ -198,7 +241,12 @@ class TeamInfo extends Component {
 
 function parseColor(str){
   console.log('str',str);
-  let arr = str.split('/').map((c)=> c.trim().toLowerCase());
+  let arr = str.split('/').map((c)=> {
+    let arr = c.trim().toLowerCase().split(" ");
+    let l = arr.length;
+    console.log(arr);
+    return l > 1 ? arr[1] : arr[0];
+  });
   return arr;
 };
 
@@ -211,13 +259,15 @@ class TeamMainInfo extends Component {
     let country = Object.assign({},info.area);
     
     console.log('info', info);
-    
+    let colors = parseColor(info.clubColors).map((color,i)=>{
+      return <span key={i} style={{display:"inline-block",height: "20px",width: "20px", background:`${color}`}}></span>
+    });
     
    return (
       <div>
-        <p>{info.name}</p>
+        <h3>{info.name}</h3>
         <p>{country.name}</p>
-        <p>{info.clubColors}</p>
+        <p>{colors}</p>
         <p>{info.founded}</p>
         <p>{info.venue}</p>
         <p><a href={info.website} target="_blank">{info.website}</a></p>
@@ -235,17 +285,50 @@ class TeamSquad extends Component {
   }
   render(){
    let players = this.props.squad.map((player)=>{
-    return <tr><td>{player.name}</td></tr>;
+    return <PlayerRow key={player.id} player_info={player}/>;
    });
 
    return (
       <div>
-        <table>
+        <h2 className="squad_head">Squad</h2>
+        <table className="squad_table">
+          <thead>
+            <tr>
+              <td>№</td>
+              <td>name</td>
+              <td>position</td>
+              <td>age</td>
+              <td>nationality</td>
+            </tr>
+          </thead>
           <tbody>
             {players}
           </tbody>
         </table>
       </div>
+    )
+  }
+}
+
+class PlayerRow extends Component {
+  constructor(props){
+    super(props);
+  }
+  render(){
+   let player_info = this.props.player_info;
+   let shirtNumber = player_info.shirtNumber || "#";
+   let position = player_info.position || player_info.role.replace("_"," ");
+   if(player_info.dateOfBirth) var ageInMs = Date.parse(new Date()) - Date.parse(new Date(player_info.dateOfBirth.split("T")[0]));
+   else {console.log('player',player_info.dateOfBirth);var ageInMs = null;}
+   let age = ageInMs ? Math.floor(ageInMs/(365*24*3600*1000)) : '-';
+   return (
+      <tr>
+        <td>{shirtNumber}</td>
+        <td>{player_info.name}</td>
+        <td>{position}</td>
+        <td>{age}</td>
+        <td>{player_info.nationality}</td>
+      </tr>
     )
   }
 }
@@ -258,8 +341,8 @@ class TeamLogo extends Component {
   render(){
     
    return (
-      <div style={{height: "100px",width: "100px"}}>
-        <img src={this.props.logo_src} style={{height:"100%",width:"100%"}}/>
+      <div className="team_logo">
+        <img src={this.props.logo_src} />
       </div>
     )
   }
