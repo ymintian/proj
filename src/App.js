@@ -36,9 +36,25 @@ function BasicExample() {
 class Table extends Component {
   constructor(props){
     super(props);
-    this.state = {teams_images:[],competitions:[],standing:[]};
+    this.state = {teams_images:[],competition:'PL',standing:[]};
+    this.handleChange = this.handleChange.bind(this);
   }
-  componentWillMount(){
+  handleChange(e){
+    let xhr = new XMLHttpRequest();
+    console.log('e',e.target.value);
+    xhr.open("GET",`https://api.football-data.org/v2/competitions/${e.target.value}/standings`,false);
+    xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
+    let arr;
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === 4 && xhr.status === 200) {
+        arr = JSON.parse(xhr.responseText);
+      }
+    };
+    xhr.send();
+    console.log('a',arr);
+    this.setState({competition: e.target.value,standing: arr.standings[0].table});
+  }
+  componentDidMount(){
     // fetch('https://api.football-data.org/v2/competitions/PL/teams',
     //   {
     //     headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
@@ -71,7 +87,7 @@ class Table extends Component {
     //   .catch((er)=>{console.log("error:"+er)});
 
     let xhr = new XMLHttpRequest();
-    xhr.open("GET","https://api.football-data.org/v2/competitions/PL/standings",false);
+    xhr.open("GET",`https://api.football-data.org/v2/competitions/${this.state.competition}/standings`,false);
     xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
     let arr;
     xhr.onreadystatechange = function () {
@@ -83,6 +99,20 @@ class Table extends Component {
     console.log(arr);
     this.setState({standing: arr.standings[0].table});
   }
+  // shouldComponentUpdate(){
+  //   let xhr = new XMLHttpRequest();
+  //   xhr.open("GET",`https://api.football-data.org/v2/competitions/${this.state.competition}/standings`,false);
+  //   xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
+  //   let arr;
+  //   xhr.onreadystatechange = function () {
+  //     if(xhr.readyState === 4 && xhr.status === 200) {
+  //       arr = JSON.parse(xhr.responseText);
+  //     }
+  //   };
+  //   xhr.send();
+  //   console.log(arr);
+  //   this.setState({standing: arr.standings[0].table});
+  // }
   render(){
     // let l = this.state.teams_images.length;
     // let src = this.state.teams_images.slice(0,l);
@@ -101,6 +131,16 @@ class Table extends Component {
     console.log(standing);
     return (
       <div>
+        <div>
+          <select className="league_select" onChange={this.handleChange} value={this.state.competition}>
+            <option value="PL">English Premier League</option>
+            <option value="PD">Spanish Primera Division</option>
+            <option value="BL1">German Bundesliga</option>
+            <option value="SA">Italian Seria A</option>
+            <option value="FL1">French League 1</option>
+            <option value="DED">Netherlands Eredevise</option>
+          </select>
+        </div>
         <h2 className="standing_head">Table</h2>
         <div>
           <table id="standing">
@@ -156,8 +196,10 @@ class SmallTeamLogo extends Component {
     super(props);
   }
   render(){
+    let src = this.props.src || 'https://www.freeiconspng.com/uploads/no-image-icon-21.png';
+    //console.log(src);
     return (
-      <img src={this.props.src} className="small_team_logo" />
+      <img src={src} className="small_team_logo" />
     )
   }
 }
