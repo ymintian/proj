@@ -187,12 +187,6 @@ body{
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
 .container {
   padding: 1px 0;
   height: 100%;
@@ -298,6 +292,7 @@ input::-moz-placeholder {
 
 button {
   display: block;
+  position: relative;
   width: 240px;
   height: 40px;
   padding: 0;
@@ -308,10 +303,8 @@ button {
   border: none;
   border-radius: 20px;
   transition: background-color .10s ease-in-out;
-  -webkit-user-select:none;
-  -moz-user-select:none;
-  -ms-user-select:none;
   user-select:none;
+  cursor: pointer;
 }
 
 button:hover {
@@ -322,7 +315,7 @@ button:active {
   background-color: #1eaa7a;
 }
 
-p {
+.container p {
   display: inline-block;
   width: 200px;
   margin: 0 40px;
@@ -331,12 +324,12 @@ p {
   /*background-color: yellow;*/
 }
 
-p a {
+.container p a {
   color: #fff;
 }
 
-label,
-p a:hover {
+.container label,
+.container p a:hover {
   -webkit-cursor: pointer;
   cursor: pointer;
 }
@@ -383,4 +376,19 @@ p a:hover {
 
 #signUp-container button {
     margin: 40px;
+}
+
+#close-form {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+.err_message {
+    display: block;
+    position: absolute;
+    top: -35px;
+    color: #f00;
+    font-size: 12px;
 }

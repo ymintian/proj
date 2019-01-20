@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, {auth} from 'firebase';
+import firebase from 'firebase';
 import './custom.css';
 // export let i = 20;
 // console.log("iiii"+i);
@@ -12,7 +12,7 @@ class Test extends Component {
         this.state = {user:null};
     }
     componentDidMount() {
-      auth().onAuthStateChanged((user) => {
+      firebase.auth().onAuthStateChanged((user) => {
             if (user) {
               this.setState({ user });
             } 
@@ -30,6 +30,7 @@ class Test extends Component {
             })
             .catch((error)=>{
                 console.log('ERROR',error);
+                let email = document.getElementById('email');
             });
     }
     handleLogin(e){

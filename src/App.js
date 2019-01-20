@@ -5,30 +5,54 @@ import fire from './my_config';
 import Test from './s';
 import Header from './header.js';
 import firebase, {auth} from 'firebase';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Link } from "react-router-dom";
 import ScrollToTop from "./ScrollToTop.js";
 
 
-function BasicExample() {
-  return (
-    <Router>
-      <ScrollToTop>
-      
+class Basic extends Component {
+  constructor(props){
+    super(props);
+    this.state = {user: null};
+  }
+  componentWillMount(){
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log('user from onAuthStateChanged',user);
+          if (user) {
+            this.setState({ user });
+          } 
+    })
+
+    async function a() {let us = await firebase.auth().currentUser;return us};
+    let user = a();
+    console.log('user from componentWillMount 1',user);
+    //this.setState({user});
+    console.log('user from componentWillMount 2',user);
+  }
+  render(){
+    let user = this.state.user;
+    return (
+      <Router>
+        <ScrollToTop>
         
-        <Route exact path="/" component={App} />
-        <Route path="/table" component={Table} />
-        <Route path="/team/:id" component={Team} />
-     
-    </ScrollToTop>
-    </Router>
-  );
+          
+          <Route exact path="/" component={App} />
+          <Route path="/table" render={()=> <Table user={user} /> } />
+          <Route path="/team/:id" component={Team} />
+        </ScrollToTop>
+      </Router>
+    );
+  }
 }
+
+// let user = firebase.auth().currentUser;
+// console.log('user from main code',user);
 
 class Table extends Component {
   constructor(props){
     super(props);
     this.state = {teams_images:[],competition:'PL',standing:[]};
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubscribe = this.handleSubscribe.bind(this);
   }
   handleChange(e){
     let xhr = new XMLHttpRequest();
@@ -44,6 +68,12 @@ class Table extends Component {
     xhr.send();
     console.log('a',arr);
     this.setState({competition: e.target.value,standing: arr.standings[0].table});
+  }
+  handleSubscribe(e){
+    console.log(e);
+    let user_email = this.props.user.email;
+    let uid = this.props.user.uid;
+    firebase.database().ref(`users/${uid}`).set({subscribe: true,email: user_email});
   }
   componentDidMount(){
     // fetch('https://api.football-data.org/v2/competitions/PL/teams',
@@ -115,12 +145,26 @@ class Table extends Component {
     // console.log('ar1',ar1);
     
 
-
+    console.log('prop user from Table', this.props.user);
     //let l = this.state.competitions.length;
     //let names = this.state.competitions.slice(0,l);
     let standing = this.state.standing.slice(0, this.state.standing.length);
+    let user = this.props.user;
+    let bool;
+    if (user){
+      let db = firebase.database().ref(`users/${user.uid}`);
+      
+      db.once('value').then( (snapshot)=>{
+        bool = snapshot.val().subscribe;
+        console.log('bool from promise',bool);
+      });
+      console.log('b',bool);
+    }
+    
+    console.log('user from Table',user);
+    
     console.log(standing);
-    return (
+    return  user ? (
       <div>
         <div>
           <select className="league_select" onChange={this.handleChange} value={this.state.competition}>
@@ -132,6 +176,7 @@ class Table extends Component {
             <option value="DED">Netherlands Eredevise</option>
           </select>
         </div>
+        { bool ? null : (<div><button onClick={this.handleSubscribe}>Subscribe</button></div>) }
         <h2 className="standing_head">Table</h2>
         <div>
           <table id="standing">
@@ -158,7 +203,7 @@ class Table extends Component {
           </table>
         </div>
       </div>
-    );
+    ) : (<div><h3>You need to sign in to viev this page</h3><Link to="/">Go home</Link></div>)
   }
 }
 
@@ -403,7 +448,7 @@ class Img extends Component {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { messages: [] }; 
+    this.state = { messages: [],user:{} }; 
   }
   componentWillMount(){
     /* Create reference to messages in Firebase Database */
@@ -424,13 +469,18 @@ class App extends Component {
         e.preventDefault();
         let email = document.getElementById('email');
         let password = document.getElementById('password');
+        let signUpContainer = document.getElementById('signUp-container');
         firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
             .then((res)=>{
                 console.log("SUCCESS",res); 
                 email.value = '';
                 password.value = '';
+                signUpContainer.querySelector('.err_message').style.color = "green";
+                signUpContainer.querySelector('.err_message').innerHTML = "Sign up successful";
             })
             .catch((error)=>{
+                let err = error.message;
+                signUpContainer.querySelector('.err_message').innerHTML = err;
                 console.log('ERROR',error);
             });
     }
@@ -438,12 +488,18 @@ class App extends Component {
         e.preventDefault();
         let email = document.getElementById('email_input');
         let password = document.getElementById('password_input');
+        let login_btn = document.querySelector('#login-button');
         firebase.auth().signInWithEmailAndPassword(email.value, password.value)
             .then((res)=>{
                 console.log("SUCCESS",res); 
-                window.location.reload();
+                login_btn.querySelector('.err_message').style.color = "green";
+                login_btn.querySelector('.err_message').innerHTML = "Login successful";
+                //window.location.href = "/table";
+                //window.location.reload();
             })
             .catch((error)=>{
+                let err = error.message;
+                login_btn.querySelector('.err_message').innerHTML = err;
                 console.log('ERROR',error);
             });
     }
@@ -452,6 +508,12 @@ class App extends Component {
       let signUpForm = document.getElementById("signUp-container");
       signUpForm.style.top = "0";
       signUpForm.style.opacity = "1";
+    }
+
+    handleClose(e){
+      let signUpForm = document.getElementById("signUp-container");
+      signUpForm.style.top = "-100%";
+      signUpForm.style.opacity = "0";
     }
   /*render() {
     return (
@@ -474,6 +536,7 @@ class App extends Component {
   }*/
 
   render(){
+    console.log("APP");
     return(
 
 <div className="container">
@@ -521,7 +584,7 @@ class App extends Component {
       </div>
     </div>
     <div className="call-to-action">
-      <button id="login-button" type="button" onClick={this.handleLogin}>Log In</button>
+      <button id="login-button" type="button" onClick={this.handleLogin}>Log In<span className="err_message"></span></button>
       <p>Don't have an account? <a onClick={this.handleSwitch}>Sign Up</a></p>
     </div>
   </div>
@@ -529,12 +592,14 @@ class App extends Component {
     <form>
       <input type="text" id="email" placeholder="email"/>
       <input type="password" id="password" placeholder="password"/>
-      <button id="signUp-btn" onClick={this.handleSignup}>Sign Up</button>
+      <button id="signUp-btn" onClick={this.handleSignup}>Sign Up<span className="err_message"></span></button>
+      <span id="close-form" onClick={this.handleClose}>X</span>
     </form>
+    
   </div>
 </div>
     )
   }
 }
 
-export default BasicExample;
+export default Basic;
