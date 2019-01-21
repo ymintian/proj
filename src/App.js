@@ -12,13 +12,26 @@ import ScrollToTop from "./ScrollToTop.js";
 class Basic extends Component {
   constructor(props){
     super(props);
-    this.state = {user: null};
+    this.state = {user: null,userSubscribe:true};
   }
   componentWillMount(){
     firebase.auth().onAuthStateChanged((user) => {
       console.log('user from onAuthStateChanged',user);
           if (user) {
             this.setState({ user });
+            let bool;
+            let db = firebase.database().ref(`users/${user.uid}`);
+            console.log('db',db);
+            
+              db.on('value', (snapshot)=>{
+                console.log(snapshot);
+                if(!snapshot.val()) {return null};
+                bool = snapshot.val().subscribe;
+                console.log('bool from promise',bool);
+                this.setState({ userSubscribe:bool });
+              });
+              
+              console.log('b',bool);
           } 
     })
 
@@ -30,13 +43,14 @@ class Basic extends Component {
   }
   render(){
     let user = this.state.user;
+    let userSubscribe = this.state.userSubscribe;
     return (
       <Router>
         <ScrollToTop>
         
           
           <Route exact path="/" component={App} />
-          <Route path="/table" render={()=> <Table user={user} /> } />
+          <Route path="/table" render={()=> <Table user={user} userSubscribe={userSubscribe} /> } />
           <Route path="/team/:id" component={Team} />
         </ScrollToTop>
       </Router>
@@ -50,7 +64,7 @@ class Basic extends Component {
 class Table extends Component {
   constructor(props){
     super(props);
-    this.state = {teams_images:[],competition:'PL',standing:[]};
+    this.state = {teams_images:null,competition:'PL',standing:null};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubscribe = this.handleSubscribe.bind(this);
   }
@@ -143,23 +157,16 @@ class Table extends Component {
     //   ar1.push(<Img src={el.crestUrl} key={i}/>);
     // });
     // console.log('ar1',ar1);
-    
-
+    console.log('render method');
+    if(!this.state.standing) {
+      console.log('no standing',this.state.standing,this.props.user);
+      return null;
+    } 
     console.log('prop user from Table', this.props.user);
     //let l = this.state.competitions.length;
     //let names = this.state.competitions.slice(0,l);
     let standing = this.state.standing.slice(0, this.state.standing.length);
     let user = this.props.user;
-    let bool;
-    if (user){
-      let db = firebase.database().ref(`users/${user.uid}`);
-      
-      db.once('value').then( (snapshot)=>{
-        bool = snapshot.val().subscribe;
-        console.log('bool from promise',bool);
-      });
-      console.log('b',bool);
-    }
     
     console.log('user from Table',user);
     
@@ -167,6 +174,7 @@ class Table extends Component {
     return  user ? (
       <div>
         <div>
+        { this.props.userSubscribe ? (
           <select className="league_select" onChange={this.handleChange} value={this.state.competition}>
             <option value="PL">English Premier League</option>
             <option value="PD">Spanish Primera Division</option>
@@ -174,9 +182,14 @@ class Table extends Component {
             <option value="SA">Italian Seria A</option>
             <option value="FL1">French League 1</option>
             <option value="DED">Netherlands Eredevise</option>
-          </select>
+          </select> ) : (
+            <select className="league_select" onChange={this.handleChange} value={this.state.competition}>
+              <option value="PL">English Premier League</option>
+            </select>
+          )
+        }
         </div>
-        { bool ? null : (<div><button onClick={this.handleSubscribe}>Subscribe</button></div>) }
+        { this.props.userSubscribe ? null : (<div><button onClick={this.handleSubscribe}>Subscribe</button></div>) }
         <h2 className="standing_head">Table</h2>
         <div>
           <table id="standing">
