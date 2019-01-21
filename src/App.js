@@ -12,7 +12,11 @@ import ScrollToTop from "./ScrollToTop.js";
 class Basic extends Component {
   constructor(props){
     super(props);
-    this.state = {user: null,userSubscribe:true};
+    console.log('user from state',firebase.auth().currentUser);
+    let d = async()=>{ let a = await firebase.auth().currentUser; console.log('fsdfsd',a) }
+    d();
+    console.log(4480);
+    this.state = {user: firebase.auth().currentUser, userSubscribe:true};
   }
   componentWillMount(){
     firebase.auth().onAuthStateChanged((user) => {
@@ -35,11 +39,11 @@ class Basic extends Component {
           } 
     })
 
-    async function a() {let us = await firebase.auth().currentUser;return us};
-    let user = a();
-    console.log('user from componentWillMount 1',user);
-    //this.setState({user});
-    console.log('user from componentWillMount 2',user);
+    // async function a() {let us = await firebase.auth().currentUser;return us};
+    // let user = a();
+    // console.log('user from componentWillMount 1',user);
+    // this.setState({user});
+    // console.log('user from componentWillMount 2',user);
   }
   render(){
     let user = this.state.user;
@@ -49,7 +53,7 @@ class Basic extends Component {
         <ScrollToTop>
         
           
-          <Route exact path="/" component={App} />
+          <Route exact path="/" render={()=> <App user={user} /> } />
           <Route path="/table" render={()=> <Table user={user} userSubscribe={userSubscribe} /> } />
           <Route path="/team/:id" component={Team} />
         </ScrollToTop>
@@ -174,22 +178,16 @@ class Table extends Component {
     return  user ? (
       <div>
         <div>
-        { this.props.userSubscribe ? (
           <select className="league_select" onChange={this.handleChange} value={this.state.competition}>
             <option value="PL">English Premier League</option>
-            <option value="PD">Spanish Primera Division</option>
-            <option value="BL1">German Bundesliga</option>
-            <option value="SA">Italian Seria A</option>
-            <option value="FL1">French League 1</option>
-            <option value="DED">Netherlands Eredevise</option>
-          </select> ) : (
-            <select className="league_select" onChange={this.handleChange} value={this.state.competition}>
-              <option value="PL">English Premier League</option>
-            </select>
-          )
-        }
+            <option value="PD" disabled={!this.props.userSubscribe}>Spanish Primera Division</option>
+            <option value="BL1" disabled={!this.props.userSubscribe}>German Bundesliga</option>
+            <option value="SA" disabled={!this.props.userSubscribe}>Italian Seria A</option>
+            <option value="FL1" disabled={!this.props.userSubscribe}>French League 1</option>
+            <option value="DED" disabled={!this.props.userSubscribe}>Netherlands Eredevise</option>
+          </select>
         </div>
-        { this.props.userSubscribe ? null : (<div><button onClick={this.handleSubscribe}>Subscribe</button></div>) }
+        { this.props.userSubscribe ? null : (<div className="subscription_container"><p>Subscribe for opening more competitions</p><button onClick={this.handleSubscribe}>Subscribe</button></div>) }
         <h2 className="standing_head">Table</h2>
         <div>
           <table id="standing">
@@ -216,7 +214,7 @@ class Table extends Component {
           </table>
         </div>
       </div>
-    ) : (<div><h3>You need to sign in to viev this page</h3><Link to="/">Go home</Link></div>)
+    ) : (<div className="notice"><h3>You need to sign in to view this page</h3><Link to="/">Go home</Link></div>)
   }
 }
 
@@ -507,7 +505,7 @@ class App extends Component {
                 console.log("SUCCESS",res); 
                 login_btn.querySelector('.err_message').style.color = "green";
                 login_btn.querySelector('.err_message').innerHTML = "Login successful";
-                //window.location.href = "/table";
+                window.location.href = "/table";
                 //window.location.reload();
             })
             .catch((error)=>{
@@ -550,7 +548,7 @@ class App extends Component {
 
   render(){
     console.log("APP");
-    return(
+    return !this.props.user ? (
 
 <div className="container">
   <div id="login" className="login">
@@ -611,7 +609,7 @@ class App extends Component {
     
   </div>
 </div>
-    )
+    ): (<div><h3>Hi, {this.props.user.email}</h3><button>Log out</button></div>)
   }
 }
 
