@@ -4,7 +4,7 @@ body {
 }
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 body{
-    background-color: darkslategrey;
+    background-color: #c0c7c7;
 }
 * {
     font-family: Montserrat, sans-serif;
@@ -411,4 +411,41 @@ button:active {
     transform: translate(-50%, -50%);
     padding: 30px 50px;
     background: #fff;
+}
+.img_loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.go_to {
+    display: block;
+    width: 240px;
+    height: 40px;
+    border-radius: 20px;
+    margin: 10px 20px 10px;
+    padding: 10px;
+    background: #22c08a;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 700;
+}
+
+#logout {
+    background: tomato;
+}
+
+.home_link {
+    text-align: center;
+}
+.home_link a {
+    font-size: 30px;
+    color: green;
+    text-decoration: none;
+}
+
+.user_greeting {
+    margin-left: 20px;
 }
