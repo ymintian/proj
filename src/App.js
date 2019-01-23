@@ -122,7 +122,8 @@ class Basic extends Component {
         <ScrollToTop>
           <Route exact path="/" render={()=> <App user={user} isLoading={this.state.isLoading} handleLogIn={this.handleLogIn} handleLogOut={this.handleLogOut} handleClose={this.handleClose} handleSwitch={this.handleSwitch} handleSignUp={this.handleSignUp}/> } />
           <Route path="/table" render={()=> <Table user={user} isLoading={this.state.isLoading} handleSubscribe={this.handleSubscribe} userSubscribe={userSubscribe} /> } />
-          <Route path="/team/:id" component={Team} />
+          <Route exact path="/team/:id" component={Team} />
+          <Route exact path="/team/:id/matches" component={TeamScoreboard} />
         </ScrollToTop>
       </Router>
     );
@@ -318,7 +319,7 @@ class SmallTeamLogo extends Component {
 class Team extends Component {
   constructor(props){
     super(props);
-    this.state = {teamInfo:[]};
+    this.state = {teamInfo:null,matches:null};
   }
   componentWillMount(){
     // let id = this.props.match.params.id;
@@ -353,14 +354,35 @@ class Team extends Component {
       }
     };
     xhr.send();
-    console.log('gfdg',arr);
+    console.log('teaminfo',arr);
     this.setState({teamInfo: arr});
+
+    fetch(`https://api.football-data.org/v2/teams/${id}/matches`,
+      {
+        headers: { 'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5' },
+        method: "GET"
+      })
+      .then((res)=>{
+        return res.json();
+      })
+      .then((r)=>{
+        // let competitions = r.competitions;
+        // let ar = [];
+        // competitions.forEach((item)=>{
+        //   ar.push(<Competition name={item.name}/>);
+        // });
+        console.log('matches',r);
+        this.setState({matches:r});
+      })
+      .catch((er)=>{console.log("error:"+er);});
 
 
   }
   
   render(){
+    if(!this.state.teamInfo) return (<div><h3>Team not found</h3><Link to="/">Go home</Link></div>);
     let teamInfo = Object.assign({}, this.state.teamInfo);
+    let matches = Object.assign({}, this.state.matches);
     
     console.log("5tregdf",teamInfo);
     if('errorCode' in teamInfo) 
@@ -368,7 +390,7 @@ class Team extends Component {
      else 
       var info = teamInfo;
   
-    return <TeamInfo teamInfo={info} />;
+    return <TeamInfo teamInfo={info} matches={matches} />;
   }
 }
 
@@ -384,7 +406,7 @@ class TeamInfo extends Component {
     else  return (
       <div className="team_info">
         <TeamLogo logo_src={logo_src}/>
-        <TeamMainInfo info={info}/>
+        <TeamMainInfo info={info} matches={this.props.matches}/>
         <TeamSquad squad={info.squad}/>
       </div>
     )
@@ -427,10 +449,75 @@ class TeamMainInfo extends Component {
         <p>{info.email}</p>
         <p>{info.phone}</p>
         <p>{info.address}</p>
+        <ScoreBtn matches={this.props.matches} info={info} />
       </div>
     )
   }
 }
+
+class ScoreBtn extends Component {
+  constructor(props){
+    super(props);
+    //this.handleClick = this.handleClick.bind(this);
+  }
+  // handleClick(e){
+  //   console.log('scores click',e);
+  //   let id = this.props.info.id;
+  //   let matches = this.props.matches;
+  //   return <Redirect to={{pathname:`/team/${id}/matches`,state:matches}} />
+  // }
+  render(){
+    let id = this.props.info.id;
+    let matches = this.props.matches;
+    return <div id="see_scores"><Link to={{pathname:`/team/${id}/matches`, state:{matches: matches,id: id}}}>See scores</Link></div>
+  }
+}
+
+class TeamScoreboard extends Component {
+  constructor(props){
+    super(props);
+  }
+  render(){
+    let games_arr = this.props.location.state.matches.matches;
+    let id = this.props.location.state.id;
+    console.log('scoreboard',games_arr);
+    let games = games_arr.map((game)=>{
+
+      let date = game.utcDate.split("T")[0];
+      if(game.status == 'SCHEDULED') return <tr><td>{date}</td><td>{game.homeTeam.name}</td><td>-:-</td><td>{game.awayTeam.name}</td><td>-</td></tr> 
+      let team = id == game.homeTeam.id ? 'homeTeam' : 'awayTeam';
+      let opponent = team == 'homeTeam' ? 'awayTeam' : 'homeTeam';
+      let res = game.score.fullTime[team] >= game.score.fullTime[opponent] ? 
+      (game.score.fullTime[team] == game.score.fullTime[opponent] ? "D" : "W") : "L";
+      let color = '';
+      switch(res){
+        case 'D':
+          color = "blue";
+          break;
+        case 'L':
+          color = 'red';
+          break;
+        case 'W':
+          color = 'green';
+          break;
+      }
+      let styles = {color:`${color}`,fontWeight: "700"};
+      console.log('styles',styles);
+      return <tr><td>{date}</td><td>{game.homeTeam.name}</td><td>{game.score.fullTime.homeTeam}:{game.score.fullTime.awayTeam}</td><td>{game.awayTeam.name}</td><td style={styles}>{res}</td></tr>;
+    });
+    return (
+      <div>
+        <h2 className="scores_head">Scores</h2>
+        <table className="scores_table">
+          <tbody>
+            {games}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+}
+
 
 class TeamSquad extends Component {
   constructor(props){

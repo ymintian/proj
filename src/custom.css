@@ -55,7 +55,7 @@ body{
     height: 100%;
 }
 
-.standing_head, .squad_head {
+.standing_head, .squad_head,.scores_head {
     display: inline-block;
     position: relative;
     color: #fff;
@@ -63,7 +63,7 @@ body{
     margin-top: 0;
     font-size: 60px;
 }
-.standing_head:before, .squad_head:before {
+.standing_head:before, .squad_head:before, .scores_head:before {
     content: '';
     position: absolute;
     height: 45px;
@@ -144,20 +144,40 @@ body{
     text-transform: capitalize;
 }
 
-.squad_table {
+.squad_table, .scores_table {
+    width: 100%;
     background: #000;
     color: #fff;
     border-collapse: collapse;
+    overflow-x: auto;
 }
 
-.squad_table td {
+.squad_table td, .scores_table td {
     border-bottom: 1px solid #fff;
     line-height: 50px;
 }
 
-.squad_table td:not(:nth-child(2)) {
+.squad_table td:not(:nth-child(2)),.scores_table td {
     text-align: center;
 }
+#see_scores {
+    width: 200px;
+    height: 40px;
+    position: relative;
+    border-radius: 20px;
+    background: #5091b9;
+}
+#see_scores a{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+}
+
+
 .league_select {
    -webkit-appearance: button;
    -webkit-border-radius: 2px;
@@ -191,7 +211,7 @@ body{
   padding: 1px 0;
   height: 100%;
   width: 100%;
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/226578/campnou(optimized).jpg");
+  background-image: url("background.jpg");
   background-size: cover;
   color: #fff;
   font-family: "Comfortaa", "Helvetica", sans-serif;
