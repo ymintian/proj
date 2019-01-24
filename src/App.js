@@ -400,7 +400,7 @@ class TeamScoreboard extends Component {
     let games = games_arr.map((game)=>{
 
       let date = game.utcDate.split("T")[0];
-      if(game.status == 'SCHEDULED') return <tr><td>{date}</td><td>{game.homeTeam.name}</td><td>-:-</td><td>{game.awayTeam.name}</td><td>-</td></tr> 
+      if(game.status == 'SCHEDULED') return <tr key={game.id}><td>{date}</td><td>{game.homeTeam.name}</td><td>-:-</td><td>{game.awayTeam.name}</td><td>-</td></tr> 
       
       let team = id == game.homeTeam.id ? 'homeTeam' : 'awayTeam';
       let opponent = team == 'homeTeam' ? 'awayTeam' : 'homeTeam';
@@ -422,7 +422,7 @@ class TeamScoreboard extends Component {
       }
       let styles = {color:`${color}`,fontWeight: "700"};
       //console.log('styles',styles);
-      return <tr><td>{date}</td><td>{game.homeTeam.name}</td><td>{game.score.fullTime.homeTeam}:{game.score.fullTime.awayTeam}</td><td>{game.awayTeam.name}</td><td style={styles}>{res}</td></tr>;
+      return <tr key={game.id}><td>{date}</td><td>{game.homeTeam.name}</td><td>{game.score.fullTime.homeTeam}:{game.score.fullTime.awayTeam}</td><td>{game.awayTeam.name}</td><td style={styles}>{res}</td></tr>;
     });
     return (
       <div>
