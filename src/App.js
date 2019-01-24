@@ -5,7 +5,7 @@ import './App.css';
 import fire from './my_config';
 import Test from './s';
 import Header from './header.js';
-import firebase, {auth, SDK_VERSION} from 'firebase';
+import firebase, {auth} from 'firebase';
 import { BrowserRouter as Router, Redirect, Route, Link } from "react-router-dom";
 import ScrollToTop from "./ScrollToTop.js";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
