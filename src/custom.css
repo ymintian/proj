@@ -336,7 +336,7 @@ button:active {
 }
 
 #login-button {
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .container p {
@@ -423,9 +423,12 @@ button:active {
 .err_message {
     display: block;
     position: absolute;
-    top: -35px;
+    top: -45px;
     color: #f00;
     font-size: 12px;
+}
+#signUp-btn .err_message {
+    top: -35px;
 }
 
 .subscription_container {
