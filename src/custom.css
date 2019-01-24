@@ -219,7 +219,7 @@ body{
 
 .login {
   max-width: 280px;
-  min-height: 500px;
+  min-height: 70%;
   margin: 30px auto;
   background-color: rgba(10,10,10,.68);
 }
@@ -335,6 +335,10 @@ button:active {
   background-color: #1eaa7a;
 }
 
+#login-button {
+    margin-top: 30px;
+}
+
 .container p {
   display: inline-block;
   width: 200px;
@@ -393,11 +397,22 @@ button:active {
     padding: 50px 30px;
     background: #000;
 }
+#root > div:first-child {
+    height: 100%;
+}
 
 #signUp-container button {
     margin: 40px;
 }
-
+.fade-enter {
+    opacity: 0;
+    z-index: 1;
+  }
+  
+  .fade-enter.fade-enter-active {
+    opacity: 1;
+    transition: opacity 250ms ease-in;
+  }
 #close-form {
     position: absolute;
     top: 20px;
