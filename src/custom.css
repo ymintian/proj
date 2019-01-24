@@ -397,7 +397,7 @@ button:active {
     padding: 50px 30px;
     background: #000;
 }
-#root > div:first-child {
+#root > div:first-child:not(.notice) {
     height: 100%;
 }
 
