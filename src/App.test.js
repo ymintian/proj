@@ -1,9 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { shallow, mount, render } from 'enzyme';
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import App from './App.js';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+Enzyme.configure({ adapter: new Adapter() });
+
+const sum = (a,b) => a+b;
+
+test('first test', () => {
+  
+  const App1 = shallow(<App/>);
+  
+  App1.setState({isLoading: false});
+
+  expect(App1.find('.container')).toHaveLength(1);
+  
+  //expect(App1.find('#root')).html().toBe(1);
 });

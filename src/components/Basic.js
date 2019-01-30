@@ -61,14 +61,13 @@ class Basic extends Component {
         </div>
       </div>
       <div id="signUp-container">
-    <form>
-      <input type="text" id="email" placeholder="email"/>
-      <input type="password" id="password" placeholder="password"/>
-      <button id="signUp-btn" onClick={this.props.handleSignUp}>Sign Up<span className="err_message"></span></button>
-      <span id="close-form" onClick={this.props.handleClose}>X</span>
-    </form>
-    
-  </div>
+        <form>
+          <input type="text" id="email" placeholder="email"/>
+          <input type="password" id="password" placeholder="password"/>
+          <button id="signUp-btn" onClick={this.props.handleSignUp}>Sign Up<span className="err_message"></span></button>
+          <span id="close-form" onClick={this.props.handleClose}>X</span>
+        </form>
+      </div>
 </  div>)
     )  : (<div><h3 className="user_greeting">Hi, {this.props.user.email}</h3><Link to="/table" className="go_to">Go to competitions</Link><button id="logout" onClick={this.props.handleLogOut}>Log out</button></div>)
   }
