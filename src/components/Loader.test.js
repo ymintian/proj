@@ -3,18 +3,18 @@ import ReactDOM from 'react-dom';
 import { shallow, mount, render } from 'enzyme';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import App from './App.js';
+import Loader from './Loader.js';
 
 Enzyme.configure({ adapter: new Adapter() });
 
 const sum = (a,b) => a+b;
 
-test('first test', () => {
-  
-  const App1 = shallow(<App/>);
-  
-  App1.setState({isLoading: false});
+console.log(Loader);
 
-  expect(true).toBeTruthy();
+test('Loader test', () => {
   
+  const loader = shallow(<Loader/>);
+  
+  //expect(Loader.find('img')).toHaveLength(1);
+
 });
