@@ -487,3 +487,8 @@ button:active {
 .user_greeting {
     margin-left: 20px;
 }
+
+#signUp-container.show_modal {
+    top: 0;
+    opacity: 1;
+}

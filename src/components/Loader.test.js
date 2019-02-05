@@ -9,7 +9,7 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const sum = (a,b) => a+b;
 
-console.log(Loader);
+//console.log(Loader);
 
 test('Loader test', () => {
   

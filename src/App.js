@@ -24,8 +24,6 @@ class App extends Component {
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleLogIn = this.handleLogIn.bind(this);
-    this.handleSwitch = this.handleSwitch.bind(this);
-    this.handleClose = this.handleClose.bind(this);
     this.handleSubscribe = this.handleSubscribe.bind(this);
     this.state = {user: firebase.auth().currentUser, isLoading:true, userSubscribe:true};
   }
@@ -102,25 +100,13 @@ class App extends Component {
                 //console.log('ERROR',error);
             });
     }
-    handleSwitch(e){
-      e.preventDefault();
-      let signUpForm = document.getElementById("signUp-container");
-      signUpForm.style.top = "0";
-      signUpForm.style.opacity = "1";
-    }
-
-    handleClose(e){
-      let signUpForm = document.getElementById("signUp-container");
-      signUpForm.style.top = "-100%";
-      signUpForm.style.opacity = "0";
-    }
   render(){
     let user = this.state.user;
     let userSubscribe = this.state.userSubscribe;
     return (
       <Router>
           <ScrollToTop> 
-            <Route exact path="/" render={()=> <Basic user={user} isLoading={this.state.isLoading} handleLogIn={this.handleLogIn} handleLogOut={this.handleLogOut} handleClose={this.handleClose} handleSwitch={this.handleSwitch} handleSignUp={this.handleSignUp}/> } />
+            <Route exact path="/" render={()=> <Basic user={user} isLoading={this.state.isLoading} handleLogIn={this.handleLogIn} handleLogOut={this.handleLogOut}  handleSignUp={this.handleSignUp}/> } />
             <Route path="/table" render={()=> <Table user={user} isLoading={this.state.isLoading} handleSubscribe={this.handleSubscribe} userSubscribe={userSubscribe} /> } />
             <Route exact path="/team/:id" component={Team} />
             <Route exact path="/team/:id/matches" component={TeamScoreboard} />  

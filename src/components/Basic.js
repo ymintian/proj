@@ -5,8 +5,18 @@ import Loader from './Loader.js';
 class Basic extends Component {
   constructor(props) {
     super(props);
+    this.handleSwitch = this.handleSwitch.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.state = {showSignUp: false};
+  }
+  handleSwitch(e){
+    e.preventDefault();
+    this.setState({showSignUp: true});
   }
 
+  handleClose(e){
+    this.setState({showSignUp: false});
+  }
   render(){
     console.log("APP",this.props.user);
     return !this.props.user ? ( this.props.isLoading ? <Loader /> : (
@@ -57,15 +67,15 @@ class Basic extends Component {
         </div>
         <div className="call-to-action">
           <button id="login-button" type="button" onClick={this.props.handleLogIn}>Log In<span className="err_message"></span></button>
-          <p>Don't have an account? <a onClick={this.props.handleSwitch}>Sign Up</a></p>
+          <p>Don't have an account? <a onClick={this.handleSwitch} id="sign_switcher">Sign Up</a></p>
         </div>
       </div>
-      <div id="signUp-container">
+      <div id="signUp-container" className={this.state.showSignUp ? "show_modal" : ''}>
         <form>
           <input type="text" id="email" placeholder="email"/>
           <input type="password" id="password" placeholder="password"/>
           <button id="signUp-btn" onClick={this.props.handleSignUp}>Sign Up<span className="err_message"></span></button>
-          <span id="close-form" onClick={this.props.handleClose}>X</span>
+          <span id="close-form" onClick={this.handleClose}>X</span>
         </form>
       </div>
 </  div>)
