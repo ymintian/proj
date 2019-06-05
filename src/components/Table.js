@@ -28,19 +28,19 @@ class Table extends Component {
   
   componentDidMount(){
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET",`https://api.football-data.org/v2/competitions/${this.state.competition}/standings`,false);
-    xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
-    let arr;
-    xhr.onreadystatechange = function () {
-      if(xhr.readyState === 4 && xhr.status === 200) {
-        arr = JSON.parse(xhr.responseText);
+    fetch(`https://api.football-data.org/v2/competitions/${this.state.competition}/standings`,{
+      headers:{
+        'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5'
       }
-    };
-    xhr.send();
+    })
+    .then((data) => data.json())
+    .then((json) => {
+      console.log("fetch response", json);
+      this.setState({standing: json.standings[0].table})
+    });
+    
+  
 
-    //console.log(arr);
-    this.setState({standing: arr.standings[0].table});
   }
   
   render(){

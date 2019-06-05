@@ -17,10 +17,11 @@ class App extends Component {
   constructor(props){
     super(props);
     //console.log('user from state',firebase.auth().currentUser);
-    let d = async()=>{ let a = await firebase.auth().currentUser; //console.log('fsdfsd',a) 
-  }
+    let d = async() => { 
+      let a = await firebase.auth().currentUser;
+    }
     d();
-    //console.log(4480);
+    
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleLogIn = this.handleLogIn.bind(this);
