@@ -19,9 +19,10 @@ class App extends Component {
     //console.log('user from state',firebase.auth().currentUser);
     let d = async() => { 
       let a = await firebase.auth().currentUser;
+      console.log("firebase user",a)
     }
     d();
-    
+    console.log("check user")
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleLogIn = this.handleLogIn.bind(this);

@@ -7,6 +7,7 @@ class TeamMainInfo extends Component {
   }
   render(){
     let info = this.props.info;
+    console.log(info)
     let country = Object.assign({},info.area);
     
     //console.log('info', info);
@@ -31,7 +32,7 @@ class TeamMainInfo extends Component {
   }
 }
 
-function parseColor(str){
+export function parseColor(str){
     
     let arr = str.split('/').map((c)=> {
       let arr = c.trim().toLowerCase().split(" ");
