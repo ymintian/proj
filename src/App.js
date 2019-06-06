@@ -12,6 +12,7 @@ import Basic from "./components/Basic.js";
 import Table from "./components/Table.js";
 import Team from "./components/Team.js";
 import TeamScoreboard from "./components/TeamScoreboard.js";
+import BasicRedux from './components/Basic.js';
 
 class App extends Component {
   constructor(props){
@@ -122,7 +123,7 @@ class App extends Component {
     return (
       <Router>
           <ScrollToTop> 
-            <Route exact path="/" render={()=> <Basic user={user} isLoading={this.state.isLoading} handleLogIn={this.handleLogIn} handleLogOut={this.handleLogOut} handleClose={this.handleClose} handleSwitch={this.handleSwitch} handleSignUp={this.handleSignUp}/> } />
+            <Route exact path="/" render={()=> <BasicRedux isLoading={this.state.isLoading} handleLogIn={this.handleLogIn} handleLogOut={this.handleLogOut} handleClose={this.handleClose} handleSwitch={this.handleSwitch} handleSignUp={this.handleSignUp}/> } />
             <Route path="/table" render={()=> <Table user={user} isLoading={this.state.isLoading} handleSubscribe={this.handleSubscribe} userSubscribe={userSubscribe} /> } />
             <Route exact path="/team/:id" component={Team} />
             <Route exact path="/team/:id/matches" component={TeamScoreboard} />  

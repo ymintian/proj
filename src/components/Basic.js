@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import  {Link} from "react-router-dom";
 import Loader from './Loader.js';
+import {getUser} from '../actions';
+import { connect } from 'react-redux'
 
 class Basic extends Component {
   constructor(props) {
@@ -73,5 +75,24 @@ class Basic extends Component {
     )  : (<div><h3 className="user_greeting">Hi, {this.props.user.email}</h3><Link to="/table" className="go_to">Go to competitions</Link><button id="logout" onClick={this.props.handleLogOut}>Log out</button></div>)
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoad: () => {
+      dispatch(getUser())
+    }
+  }
+}
+
+const BasicRedux = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Basic)
 
 export default Basic;
