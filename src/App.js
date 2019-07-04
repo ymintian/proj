@@ -7,7 +7,7 @@ import fire from './my_config';
 import firebase, {auth} from 'firebase';
 import { BrowserRouter as Router, Redirect, Route, Link } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop.js";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+//import { TransitionGroup, CSSTransition } from "react-transition-group";
 import Basic from "./components/Basic.js";
 import Table from "./components/Table.js";
 import Team from "./components/Team.js";

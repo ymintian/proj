@@ -15,6 +15,6 @@ test('Loader test', () => {
   
   const loader = shallow(<Loader/>);
   
-  //expect(Loader.find('img')).toHaveLength(1);
+  expect(loader.find('img')).toHaveLength(1);
 
 });

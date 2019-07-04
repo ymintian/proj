@@ -31,8 +31,8 @@ class TeamMainInfo extends Component {
   }
 }
 
-function parseColor(str){
-    
+export function parseColor(str){
+    if(!str || typeof str != "string") return null;
     let arr = str.split('/').map((c)=> {
       let arr = c.trim().toLowerCase().split(" ");
       let l = arr.length;
