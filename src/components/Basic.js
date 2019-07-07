@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import  {Link} from "react-router-dom";
 import Loader from './Loader.js';
 import {getUser} from '../actions';
-import { connect } from 'react-redux'
 
 class Basic extends Component {
   constructor(props) {
@@ -76,23 +75,5 @@ class Basic extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    user: state.user
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onLoad: () => {
-      dispatch(getUser())
-    }
-  }
-}
-
-const BasicRedux = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Basic)
 
 export default Basic;

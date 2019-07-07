@@ -13,6 +13,9 @@ import Table from "./components/Table.js";
 import Team from "./components/Team.js";
 import TeamScoreboard from "./components/TeamScoreboard.js";
 import BasicRedux from './components/Basic.js';
+import {store} from './index.js';
+import {getUser} from './actions';
+import { connect } from 'react-redux'
 
 class App extends Component {
   constructor(props){
@@ -92,17 +95,23 @@ class App extends Component {
         let login_btn = document.querySelector('#login-button');
         firebase.auth().signInWithEmailAndPassword(email.value, password.value)
             .then((res)=>{
-                //console.log("SUCCESS",res); 
+                console.log("SUCCESS auth",res); 
                 login_btn.querySelector('.err_message').style.color = "green";
                 login_btn.querySelector('.err_message').innerHTML = "Login successful";
-                this.setState({user:res});
+                //this.setState({user:res});
+                console.log("get user from action creator", getUser(res));
+                this.props.onLogin({type: "GET_USER", user: res});
+                
                 //window.location.href = "/table";
                 //window.location.reload();
             })
             .catch((error)=>{
                 let err = error.message;
                 login_btn.querySelector('.err_message').innerHTML = err;
-                //console.log('ERROR',error);
+                console.log('ERROR auth');
+                console.log('---------');
+                console.log(this);
+                console.log(error);
             });
     }
     handleSwitch(e){
@@ -133,5 +142,20 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
 
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+    onLogin: () => {
+      dispatch(getUser())
+    }
+  }
+}
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
