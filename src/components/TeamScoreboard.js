@@ -16,23 +16,23 @@ class TeamScoreboard extends Component {
     headers.append('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5')
     //headers.append('Access-Control-Allow-Origin', '*')
     
-    let initRequest = {
-      method: "GET",
-      headers: headers,
-      //mode: 'no-cors'
-    }
+    // let initRequest = {
+    //   method: "GET",
+    //   headers: headers,
+    //   //mode: 'no-cors'
+    // }
     //http://api.football-data.org/v2/fixtures/149430
     //https://api.football-data.org/v2/competitions/PL/standings
-    fetch('https://api.football-data.org/v2/matches/233094',initRequest)
-    .then((res) => {
-      console.log("FETCH");
-      console.log(res);
-      return res.json();
-    })
-    .then((data) => {
-      console.log(data)
-      this.hello();
-    })
+    // fetch('https://api.football-data.org/v2/matches/233094',initRequest)
+    // .then((res) => {
+    //   console.log("FETCH");
+    //   console.log(res);
+    //   return res.json();
+    // })
+    // .then((data) => {
+    //   console.log(data)
+    //   this.hello();
+    // })
     let games_arr = this.props.location.state.matches.matches;
     let id = this.props.location.state.id;
     //console.log('scoreboard',games_arr);

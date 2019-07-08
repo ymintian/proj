@@ -5,7 +5,7 @@ import './App.css';
 import './custom.css';
 import fire from './my_config';
 import firebase, {auth} from 'firebase';
-import { BrowserRouter as Router, Redirect, Route, Link } from "react-router-dom";
+import { Router, Redirect, Route, Link } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop.js";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import Basic from "./components/Basic.js";
@@ -15,7 +15,8 @@ import TeamScoreboard from "./components/TeamScoreboard.js";
 import BasicRedux from './components/Basic.js';
 import {store} from './index.js';
 import {getUser} from './actions';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import history from './history';
 
 class App extends Component {
   constructor(props){
@@ -100,8 +101,10 @@ class App extends Component {
                 login_btn.querySelector('.err_message').innerHTML = "Login successful";
                 //this.setState({user:res});
                 console.log("get user from action creator", getUser(res));
-                this.props.onLogin({type: "GET_USER", user: res});
-                
+                this.props.onLogin();
+                console.log(this.props);
+                history.push("/table");
+                console.log("HISTORY", history);
                 //window.location.href = "/table";
                 //window.location.reload();
             })
@@ -129,11 +132,12 @@ class App extends Component {
   render(){
     let user = this.state.user;
     let userSubscribe = this.state.userSubscribe;
+    
     return (
-      <Router>
+      <Router history={history}>
           <ScrollToTop> 
             <Route exact path="/" render={()=> <BasicRedux isLoading={this.state.isLoading} handleLogIn={this.handleLogIn} handleLogOut={this.handleLogOut} handleClose={this.handleClose} handleSwitch={this.handleSwitch} handleSignUp={this.handleSignUp}/> } />
-            <Route path="/table" render={()=> <Table user={user} isLoading={this.state.isLoading} handleSubscribe={this.handleSubscribe} userSubscribe={userSubscribe} /> } />
+            <Route exact path="/table" render={()=> <Table user={user} isLoading={this.state.isLoading} handleSubscribe={this.handleSubscribe} userSubscribe={userSubscribe} /> } />
             <Route exact path="/team/:id" component={Team} />
             <Route exact path="/team/:id/matches" component={TeamScoreboard} />  
           </ScrollToTop>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import  {Link} from "react-router-dom";
 import Loader from './Loader.js';
 import StandingRow from './StandingRow.js';
+import {withRouter} from 'react-router';
+import {store} from '../index.js';
 
 
 class Table extends Component {
@@ -13,7 +15,7 @@ class Table extends Component {
   handleChange(e){
     let xhr = new XMLHttpRequest();
     //console.log('e',e.target.value);
-    xhr.open("GET",`https://api.football-data.org/v2/competitions/${e.target.value}/standings`,false);
+    xhr.open("GET",`https://api.football-data.org/v2/competitions/${e.target.value}/standings?season=2018`,false);
     xhr.setRequestHeader('X-Auth-Token', '7b2ac51349fd45cab94bd34a5e8db4a5');
     let arr;
     xhr.onreadystatechange = function () {
@@ -28,7 +30,7 @@ class Table extends Component {
   
   componentDidMount(){
 
-    fetch(`https://api.football-data.org/v2/competitions/${this.state.competition}/standings`,{
+    fetch(`https://api.football-data.org/v2/competitions/${this.state.competition}/standings?season=2018`,{
       headers:{
         'X-Auth-Token': '7b2ac51349fd45cab94bd34a5e8db4a5'
       }
@@ -48,7 +50,7 @@ class Table extends Component {
     if(!this.state.standing) {
       return null;
     } 
-    
+    console.log("STATE TABLE from store",store.getState())
     let standing = this.state.standing.slice(0, this.state.standing.length);
     let user = this.props.user;
     let isLoading = this.props.isLoading;
@@ -104,4 +106,4 @@ class Table extends Component {
   }
 }
 
-export default Table;
+export default withRouter(Table);
