@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ScoreBtn from './ScoreBtn.js';
+import {connect} from 'react-redux';
 
 class TeamMainInfo extends Component {
   constructor(props){
@@ -8,17 +9,17 @@ class TeamMainInfo extends Component {
   render(){
     let info = this.props.info;
     console.log(info)
-    let country = Object.assign({},info.area);
-    
+    //let country = Object.assign({},info.area);
+    this.props.onLoad({type: "TEST_USER", user: "test user"});
     //console.log('info', info);
     let colors = parseColor(info.clubColors).map((color,i)=>{
       return <span key={i} style={{display:"inline-block",height: "20px",width: "20px", background:`${color}`}}></span>
     });
-    
+    console.log("user from TeamMainInfo",this.props.user);
    return (
       <div>
         <h3>{info.name}</h3>
-        <p>{country.name}</p>
+        {/* <p>{country.name}</p> */}
         <p>{colors}</p>
         <p>{info.founded}</p>
         <p>{info.venue}</p>
@@ -43,4 +44,21 @@ export function parseColor(str){
     return arr;
 };
 
-export default TeamMainInfo;
+
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onLoad: (user) => {
+      console.log('param from mapdispatchtoprops',user)
+      dispatch(user)
+    }
+  }
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(TeamMainInfo);
